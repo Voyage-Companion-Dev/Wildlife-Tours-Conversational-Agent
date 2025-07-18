@@ -1,0 +1,187 @@
+{
+  "assets": {
+    "synonyms": [],
+    "qnas": [
+      {
+        "id": "1",
+        "answer": "Wildlife Tours Rwanda allows full refund if you cancel 60 or more days before departure (loss of deposit). Between 30–59 days before trip, a cancellation charge of 50% applies. Within 30 days, 100% of the tour price is non‑refundable. No refunds once the trip starts.",
+        "questions": [
+          "What is your cancellation policy?",
+          "How late can I cancel my safari?",
+          "Refund terms for trip cancellation"
+        ]
+      },
+      {
+        "id": "2",
+        "answer": "Wildlife Tours Rwanda will not cancel any tour fewer than 60 days before departure. A tour is guaranteed once at least one traveler has paid in full, unless there is force majeure (e.g., political unrest). In such cases you may take an alternative trip or receive a full refund.",
+        "questions": [
+          "Will you cancel my tour if numbers are low?",
+          "Do you guarantee departures?",
+          "What if the tour operator cancels?"
+        ]
+      },
+      {
+        "id": "3",
+        "answer": "Amending your booking 60+ days before departure incurs a USD 150 per person fee. Amendments within 60 days follow the cancellation fee schedule. No amendments are permitted within 10 days of departure.",
+        "questions": [
+          "Can I change my booking dates?",
+          "What are the amendment fees?",
+          "Modify my safari reservation"
+        ]
+      },
+      {
+        "id": "4",
+        "answer": "Bookings made within 15 days of departure incur a USD 50 late booking fee per booking.",
+        "questions": [
+          "Is there a late booking fee?",
+          "What if I book last-minute?",
+          "Do you charge extra for late bookings?"
+        ]
+      },
+      {
+        "id": "5",
+        "answer": "Most packages require a 30% deposit to confirm your booking, with the balance due before departure (typically 30–60 days out). Payment can be made via international bank transfer or credit card (Visa, Mastercard).",
+        "questions": [
+          "What deposit is required?",
+          "How do I pay for a tour?",
+          "Payment methods and deposit"
+        ]
+      },
+      {
+        "id": "6",
+        "answer": "Our safari packages include accommodation (tented camps, mid‑range or luxury lodges), full board meals, park entrance fees, professional English‑speaking guides, transport between parks, and daily activities as per itinerary. International flights and visa fees are not included.",
+        "questions": [
+          "What’s included in the tour price?",
+          "Are meals and lodges part of the package?",
+          "What does the price cover?"
+        ]
+      },
+      {
+        "id": "7",
+        "answer": "We offer gorilla trekking in Volcanoes National Park, chimpanzee tracking in Nyungwe Forest, Big Five game drives and boat cruises in Akagera, plus optional cultural village visits, bird‑watching, and community visits.",
+        "questions": [
+          "What wildlife activities are offered?",
+          "Do you do gorilla trekking and chimp tracking?",
+          "Activities in Rwanda safari"
+        ]
+      },
+      {
+        "id": "8",
+        "answer": "The optimal safari timing is during the dry seasons: June to September and December to February. These months offer better trail access and higher chances for wildlife sightings.",
+        "questions": [
+          "When is the best time to visit Rwanda?",
+          "Best season for safari in Rwanda",
+          "Ideal months to see gorillas"
+        ]
+      },
+      {
+        "id": "9",
+        "answer": "Vehicle transport is in insured 4×4 safari vehicles with pop‑up roofs for game drives. Transfers between Kigali and parks use minibuses or private cars, depending on group size.",
+        "questions": [
+          "What vehicles do you use?",
+          "Is transport safe during safari?",
+          "What kind of cars are provided?"
+        ]
+      },
+      {
+        "id": "10",
+        "answer": "Yes, our guides speak fluent English. French‑speaking guides or translators (e.g. German, Mandarin) can be arranged on request—please notify us at least two weeks in advance.",
+        "questions": [
+          "What languages do your guides speak?",
+          "Can I request a French guide?",
+          "Language support for tours"
+        ]
+      },
+      {
+        "id": "11",
+        "answer": "A local payment in cash (in USD or RWF) is due upon arrival to cover park permit fees, local levies, and tips—not included in the package price. These amounts will be listed on your invoice.",
+        "questions": [
+          "Do I need cash on arrival?",
+          "Which local fees are paid in cash?",
+          "Are park permits paid locally?"
+        ]
+      },
+      {
+        "id": "12",
+        "answer": "Permits such as gorilla or chimpanzee tracking are purchased after deposit is received. Permit fees are non‑refundable and set by the Rwanda Development Board (~USD 1500 per gorilla permit).",
+        "questions": [
+          "How much are gorilla permits?",
+          "Are permits refundable?",
+          "Permit fees for gorilla trekking"
+        ]
+      },
+      {
+        "id": "13",
+        "answer": "You can upgrade or downgrade your lodge when booking or up to 60 days before departure (with applicable fees or price difference). No lodge changes permitted within 10 days of departure.",
+        "questions": [
+          "Can I change my accommodation?",
+          "Upgrade lodge type?",
+          "Choose luxury vs budget lodging"
+        ]
+      },
+      {
+        "id": "14",
+        "answer": "Travel insurance that covers medical emergencies, evacuation, cancellation, and trip interruption is strongly recommended. Visitors are responsible for securing appropriate insurance before travel.",
+        "questions": [
+          "Is travel insurance required?",
+          "Do you provide insurance?",
+          "What insurance do I need?"
+        ]
+      },
+      {
+        "id": "15",
+        "answer": "Rwanda requires a tourist visa, which can be obtained online via e‑visa (~USD 50). Some nationalities can get a visa on arrival, but early application is advised.",
+        "questions": [
+          "Do I need a visa for Rwanda?",
+          "How to get a visa?",
+          "Rwanda entry requirements"
+        ]
+      },
+      {
+        "id": "16",
+        "answer": "Some itineraries include only one park; you can combine Volcanoes, Nyungwe, and Akagera in multi‑park packages. Custom itineraries across multiple parks are available upon request.",
+        "questions": [
+          "Can I visit multiple parks?",
+          "Do you offer combined itineraries?",
+          "Multi‑park safari options"
+        ]
+      },
+      {
+        "id": "17",
+        "answer": "We offer one‑day Big Five safari adventures in Akagera, two‑day gorilla encounters, and longer bespoke packages such as combined Volcanoes, Nyungwe, and Lake Kivu tours.",
+        "questions": [
+          "Do you offer 1‑day safaris?",
+          "Two‑day gorilla trek?",
+          "Types of tour packages"
+        ]
+      },
+      {
+        "id": "18",
+        "answer": "It usually takes about 7 hours to drive from Kigali to Akagera (rough roads), and 3‑4 hours to reach Volcanoes National Park. We schedule early departures to maximize your time on safari.",
+        "questions": [
+          "How far is Akagera from Kigali?",
+          "Travel time to Volcanoes NP?",
+          "How long is the drive between parks?"
+        ]
+      },
+      {
+        "id": "19",
+        "answer": "Yes, Rwanda is one of the safest countries in Africa. Visitors and Reddit users confirm that tourism areas and parks are well‑secured and generally safe, even for solo travelers.",
+        "questions": [
+          "Is Rwanda safe for travel?",
+          "Security in Rwanda parks?",
+          "Tourist safety in Rwanda"
+        ]
+      },
+      {
+        "id": "20",
+        "answer": "Yes, you can book gorilla permits at short notice if slots are available. Some visitors have booked on the morning of the trek, but high season gets booked fast—plan ahead for best availability.",
+        "questions": [
+          "Can I book gorilla trekking permit last minute?",
+          "How far in advance should I book?",
+          "Permit availability tips"
+        ]
+      }
+    ]
+  }
+}
