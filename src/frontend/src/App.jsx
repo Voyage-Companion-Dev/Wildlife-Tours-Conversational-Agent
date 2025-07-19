@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import { useEffect } from 'react';
-
 import './App.css';
 import Chat from './Chat.jsx';
 
