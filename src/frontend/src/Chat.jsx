@@ -72,11 +72,12 @@ const Chat = () => {
     // Wildlife Tours Rwanda Logo Component
     const Logo = () => (
         <div className="flex items-center justify-center">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3 shadow-sm">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-emerald-600">
-                    <path d="M12 2L13.09 8.26L19.94 8.26L14.47 12.74L15.56 19L12 15.27L8.44 19L9.53 12.74L4.06 8.26L10.91 8.26L12 2Z" fill="currentColor"/>
-                    <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-                </svg>
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3 shadow-sm overflow-hidden">
+                <img 
+                    src="./logo.png" 
+                    alt="Wildlife Tours Rwanda Logo" 
+                    className="w-full h-full object-contain"
+                />
             </div>
             <div>
                 <div className="text-white font-semibold text-sm tracking-wide">Wildlife Tours Rwanda</div>
