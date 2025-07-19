@@ -83,7 +83,7 @@
                     { "category": "TravelPurpose", "offset": 8, "length": 8 },
                     { "category": "Destination", "offset": 25, "length": 7 },
                     { "category": "Activities", "offset": 38, "length": 14 },
-                    { "category": "TravelDate", "offset": 54, "length": 7 }
+                    { "category": "TravelDate", "offset": 53, "length": 7 }
                 ]
             },
             {
@@ -93,7 +93,7 @@
                 "entities": [
                     { "category": "TravelPurpose", "offset": 14, "length": 21 },
                     { "category": "Destination", "offset": 43, "length": 11 },
-                    { "category": "TravelDate", "offset": 60, "length": 14 }
+                    { "category": "TravelDate", "offset": 60, "length": 13 }
                 ]
             },
             {
@@ -115,7 +115,7 @@
                     { "category": "TravelPurpose", "offset": 11, "length": 6 },
                     { "category": "Activities", "offset": 18, "length": 13 },
                     { "category": "Destination", "offset": 41, "length": 7 },
-                    { "category": "TravelDate", "offset": 56, "length": 12 }
+                    { "category": "TravelDate", "offset": 55, "length": 12 }
                 ]
             },
             {
@@ -124,7 +124,7 @@
                 "intent": "NewTripRequest",
                 "entities": [
                     { "category": "Activities", "offset": 19, "length": 12 },
-                    { "category": "Destination", "offset": 37, "length": 21 }
+                    { "category": "Destination", "offset": 36, "length": 21 }
                 ]
             },
             {
@@ -160,7 +160,7 @@
                 "intent": "NewTripRequest",
                 "entities": [
                     { "category": "Destination", "offset": 19, "length": 25 },
-                    { "category": "TravelDate", "offset": 50, "length": 8 }
+                    { "category": "TravelDate", "offset": 48, "length": 9 }
                 ]
             },
             {
