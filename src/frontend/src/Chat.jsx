@@ -116,13 +116,13 @@ const Chat = () => {
                 <div className="logo-container">
                     <div className="logo-circle">
                         {/* Replace with actual logo image when available */}
-                        <span className="logo-emoji">🦍</span>
-                        {/* Uncomment when you have a logo image:
+                        
+                        
                         <img 
                             src="./logo.png" 
                             alt="Wildlife Tours Rwanda Logo" 
                         />
-                        */}
+                        
                     </div>
                     <div className="header-text">
                         <div className="title">Wildlife Tours Rwanda</div>
