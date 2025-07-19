@@ -7,7 +7,7 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     const messageEndRef = useRef(null);
-    const welcomeMessage = 'Hi there! Ask me anything about wildlife in Rwanda.'; // Customized welcome message
+    const welcomeMessage = 'Welcome to your personal wildlife guide! Ask me anything about Rwanda\'s incredible national parks, wildlife safaris, or travel planning tips.';
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -43,7 +43,7 @@ const Chat = () => {
             );
 
             if (!response.ok) {
-                throw new Error("Oops! Something went wrong while chatting."); // More user-friendly error
+                throw new Error("Connection issue - please try again in a moment.");
             }
 
             const systemResponse = await response.json();
@@ -53,6 +53,7 @@ const Chat = () => {
             return systemMessages;
         } catch (error) {
             console.error("Error while processing chat: ", error)
+            return ["Sorry, I'm having trouble connecting right now. Please try again in a moment."];
         }
     };
 
@@ -74,42 +75,69 @@ const Chat = () => {
 
     return (
         <div className="chat-container">
+            {/* Header with branding */}
+            <div className="chat-header">
+                <h1>Wildlife Rwanda Guide</h1>
+                <div className="subtitle">Your Expert Safari Companion</div>
+            </div>
+            
             <div className="chat-messages">
-                {messages.length == 0 && (<div className="message-content welcome-message">{welcomeMessage}</div>)}
+                {messages.length === 0 && (
+                    <div className="welcome-message">{welcomeMessage}</div>
+                )}
+                
                 {messages.map((message, index) => (
-                    <div key={index} tabIndex="0" className={message.role === 'User' ? "message-user" : "message-agent"}>
+                    <div 
+                        key={index} 
+                        className={message.role === 'User' ? "message-user" : "message-agent"}
+                        role="article"
+                        aria-label={`Message from ${message.role === 'User' ? 'you' : 'Wildlife Rwanda Guide'}`}
+                    >
                         <div className="message">
-                            <h3 className="message-header">{message.role === 'User' ? 'You' : 'Wildlife Rwanda Bot'}</h3> {/* Custom role titles */}
+                            <div className="message-header">
+                                {message.role === 'User' ? 'You' : 'Guide'}
+                            </div>
                             <Markdown className="message-content">{message.content}</Markdown>
                         </div>
                     </div>
                 ))}
-                {isTyping && <p className="message message-typing">The bot is thinking...</p>} {/* Friendlier typing message */}
-                <div ref={messageEndRef}/>
+                
+                {isTyping && (
+                    <div className="message-agent">
+                        <div className="message-typing">Guide is thinking</div>
+                    </div>
+                )}
+                
+                <div ref={messageEndRef} />
             </div>
+            
             <form
                 className="chat-input-form"
                 onSubmit={(e) => {
                     e.preventDefault();
                     const input = e.target.input.value;
-                    if (input.trim() != "") {
+                    if (input.trim() !== "") {
                         handleSendMessage(input);
                         e.target.reset();
                     }
                 }}
-                aria-label="Chat Input Form"
+                aria-label="Send message form"
             >
                 <input
                     className="chat-input"
                     type="text"
                     name="input"
-                    placeholder="Ask about wildlife, national parks, or travel tips..." // Custom placeholder
-                    disabled={isTyping}/>
+                    placeholder="Ask about gorilla trekking, national parks, safari planning..."
+                    disabled={isTyping}
+                    aria-label="Type your message"
+                />
                 <button
                     className="chat-submit-button" 
                     type="submit"
+                    disabled={isTyping}
+                    aria-label="Send message"
                 >
-                    Send
+                    {isTyping ? '...' : 'Send'}
                 </button>
             </form>
         </div>
