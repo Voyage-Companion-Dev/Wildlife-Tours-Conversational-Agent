@@ -1,7 +1,8 @@
 FROM mcr.microsoft.com/cbl-mariner/base/nodejs:18 AS build-ui
 
 WORKDIR /app
-
+# Add this line to force cache busting when you want
+ARG CACHEBUST=1
 COPY frontend/src/ /app/src
 COPY frontend/package.json /app
 COPY frontend/vite.config.js /app
@@ -17,6 +18,7 @@ WORKDIR /app
 COPY --from=build-ui /app/dist /app/dist
 
 COPY backend/src/ /app
+
 COPY backend/requirements.txt /app
 
 RUN pip install -r requirements.txt
