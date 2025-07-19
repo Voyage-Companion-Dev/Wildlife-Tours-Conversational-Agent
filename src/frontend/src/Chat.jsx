@@ -7,7 +7,7 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
     const messageEndRef = useRef(null);
-    const welcomeMessage = 'Welcome to your personal wildlife guide! Ask me anything about Rwanda\'s incredible national parks, wildlife safaris, or travel planning tips.';
+    const welcomeMessage = 'Hey there! I\'m here to help you discover Rwanda\'s amazing wildlife and plan your perfect safari adventure. What would you like to explore today?';
 
     const scrollToBottom = () => {
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -43,7 +43,7 @@ const Chat = () => {
             );
 
             if (!response.ok) {
-                throw new Error("Connection issue - please try again in a moment.");
+                throw new Error("Having trouble connecting - let me try that again in a moment.");
             }
 
             const systemResponse = await response.json();
@@ -53,7 +53,7 @@ const Chat = () => {
             return systemMessages;
         } catch (error) {
             console.error("Error while processing chat: ", error)
-            return ["Sorry, I'm having trouble connecting right now. Please try again in a moment."];
+            return ["Oops! I'm having some connection trouble right now. Mind giving it another try?"];
         }
     };
 
@@ -68,7 +68,7 @@ const Chat = () => {
 
         for (const msg of systemMessages) {
             setMessages((prevMessages) => [
-                ...prevMessages, { role: "System", content: msg }
+                ...prevMessages, { role: "Guide", content: msg }
             ]);
         }
     };
@@ -78,7 +78,7 @@ const Chat = () => {
             {/* Header with branding */}
             <div className="chat-header">
                 <h1>Wildlife Rwanda Guide</h1>
-                <div className="subtitle">Your Expert Safari Companion</div>
+                <div className="subtitle">Your Personal Safari Expert</div>
             </div>
             
             <div className="chat-messages">
@@ -89,13 +89,13 @@ const Chat = () => {
                 {messages.map((message, index) => (
                     <div 
                         key={index} 
-                        className={message.role === 'User' ? "message-user" : "message-agent"}
+                        className={message.role === 'User' ? "message-user" : "message-guide"}
                         role="article"
-                        aria-label={`Message from ${message.role === 'User' ? 'you' : 'Wildlife Rwanda Guide'}`}
+                        aria-label={`Message from ${message.role === 'User' ? 'you' : 'your wildlife guide'}`}
                     >
                         <div className="message">
                             <div className="message-header">
-                                {message.role === 'User' ? 'You' : 'Guide'}
+                                {message.role === 'User' ? 'You' : 'Your Guide'}
                             </div>
                             <Markdown className="message-content">{message.content}</Markdown>
                         </div>
@@ -103,8 +103,17 @@ const Chat = () => {
                 ))}
                 
                 {isTyping && (
-                    <div className="message-agent">
-                        <div className="message-typing">Guide is thinking</div>
+                    <div className="message-guide">
+                        <div className="message-typing">
+                            <span className="typing-indicator">
+                                Thinking about your question
+                                <span className="dots">
+                                    <span>.</span>
+                                    <span>.</span>
+                                    <span>.</span>
+                                </span>
+                            </span>
+                        </div>
                     </div>
                 )}
                 
@@ -127,17 +136,17 @@ const Chat = () => {
                     className="chat-input"
                     type="text"
                     name="input"
-                    placeholder="Ask about gorilla trekking, national parks, safari planning..."
+                    placeholder="Ask me about gorilla trekking, the best parks to visit, or planning your trip..."
                     disabled={isTyping}
-                    aria-label="Type your message"
+                    aria-label="Type your message here"
                 />
                 <button
                     className="chat-submit-button" 
                     type="submit"
                     disabled={isTyping}
-                    aria-label="Send message"
+                    aria-label="Send your message"
                 >
-                    {isTyping ? '...' : 'Send'}
+                    {isTyping ? 'Sending...' : 'Send'}
                 </button>
             </form>
         </div>
