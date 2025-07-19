@@ -125,7 +125,7 @@ const Chat = () => {
                         
                     </div>
                     <div className="header-text">
-                        <div className="title">Wildlife Tours Rwanda</div>
+                        <div className="title">Wildlife Tours-Rwanda</div>
                         <div className="subtitle">Travel Concierge</div>
                     </div>
                 </div>
@@ -158,7 +158,7 @@ const Chat = () => {
                 {isTyping && (
                     <div className="typing-indicator">
                         <div className="typing-bubble">
-                            <div className="typing-header">Concierge</div>
+                            <div className="typing-header">WTR Concierge</div>
                             <div className="typing-content">
                                 <div className="typing-dots">
                                     <div className="typing-dot"></div>
