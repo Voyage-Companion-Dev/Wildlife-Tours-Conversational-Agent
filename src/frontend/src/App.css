@@ -374,3 +374,29 @@ body {
     margin-right: 32px;
   }
 }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 360px) {
+  .chat-header {
+    padding: 16px;
+  }
+  
+  .chat-input-form {
+    padding: 8px;
+  }
+  
+  .chat-input {
+    font-size: 12px;
+    padding: 10px;
+  }
+  
+  .chat-submit-button {
+    padding: 10px;
+    font-size: 12px;
+  }
+  
+  .welcome-message {
+    font-size: 12px;
+    padding: 12px;
+  }
+} 
