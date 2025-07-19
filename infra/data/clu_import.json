@@ -286,7 +286,7 @@
                 "language": "en-us",
                 "intent": "TourActivitiesInquiry",
                 "entities": [
-                    { "category": "Destination", "offset": 28, "length": 15 }
+                    { "category": "Destination", "offset": 28, "length": 14 }
                 ]
             },
             {
