@@ -45,13 +45,16 @@ else:
 #     "ORDER_REFUND_AGENT_ID": os.environ.get("ORDER_REFUND_AGENT_ID"),
 # }
 
-# Check if all required agent IDs are present
+# Define the required agent keys for your updated use case
 required_agents = [
     "TRIAGE_AGENT_ID",
-    "HEAD_SUPPORT_AGENT_ID", 
-    "ORDER_STATUS_AGENT_ID",
-    "ORDER_CANCEL_AGENT_ID",
-    "ORDER_REFUND_AGENT_ID"
+    "HEAD_SUPPORT_AGENT_ID",
+    "SAFARI_PLANNING_AGENT_ID",
+    "HOTEL_BOOKING_AGENT_ID",
+    "TRANSPORT_COORDINATION_AGENT_ID",
+    "EXPERIENCE_CURATION_AGENT_ID",
+    "FEEDBACK_SURVEY_AGENT_ID",
+    "FALLBACK_HANDLER_AGENT_ID"
 ]
 
 missing_agents = [agent for agent in required_agents if not AGENT_IDS.get(agent)]
