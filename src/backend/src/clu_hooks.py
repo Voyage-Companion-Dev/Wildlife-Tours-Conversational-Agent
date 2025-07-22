@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 import logging
-from plugins import (
+from agents import (
     SafariPlanningPlugin,
     HotelBookingPlugin,
     TransportCoordinationPlugin,
