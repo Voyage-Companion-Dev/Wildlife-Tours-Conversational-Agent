@@ -1,0 +1,30 @@
+{
+  "type": "function",
+  "function": {
+    "name": "coordinate_transport",
+    "description": "Arranges local transport (4×4 vehicles, guides, airport pickups).",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "pickup_location": {
+          "type": "string",
+          "description": "Where to pick up the party."
+        },
+        "dropoff_location": {
+          "type": "string",
+          "description": "Drop‑off destination."
+        },
+        "date": {
+          "type": "string",
+          "description": "Travel date (YYYY‑MM‑DD)."
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "fr"],
+          "description": "Response language code."
+        }
+      },
+      "required": ["pickup_location", "dropoff_location", "date"]
+    }
+  }
+}

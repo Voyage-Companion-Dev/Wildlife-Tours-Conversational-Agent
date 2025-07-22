@@ -1,0 +1,30 @@
+{
+  "type": "function",
+  "function": {
+    "name": "collect_feedback",
+    "description": "Collects post‑trip feedback and satisfaction ratings.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "trip_id": {
+          "type": "string",
+          "description": "Unique identifier for the completed trip."
+        },
+        "satisfaction_rating": {
+          "type": "integer",
+          "description": "Rating from 1 (low) to 5 (high)."
+        },
+        "comments": {
+          "type": "string",
+          "description": "Additional user comments."
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "fr"],
+          "description": "Response language code."
+        }
+      },
+      "required": ["trip_id", "satisfaction_rating", "comments"]
+    }
+  }
+}

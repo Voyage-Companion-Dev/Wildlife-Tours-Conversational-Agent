@@ -1,0 +1,22 @@
+{
+  "type": "function",
+  "function": {
+    "name": "handle_fallback",
+    "description": "Prompts user for clarification when input is unclear or low‑confidence.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "user_input": {
+          "type": "string",
+          "description": "Original user message needing clarification."
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "fr"],
+          "description": "Response language code."
+        }
+      },
+      "required": ["user_input"]
+    }
+  }
+}

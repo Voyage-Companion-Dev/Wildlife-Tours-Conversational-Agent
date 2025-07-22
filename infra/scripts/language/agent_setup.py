@@ -1,175 +1,139 @@
 import json
 import os
 from azure.ai.agents import AgentsClient
-from azure.ai.agents.models import OpenApiTool, OpenApiManagedAuthDetails,OpenApiManagedSecurityScheme
-from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+from azure.ai.agents.models import OpenApiTool, OpenApiManagedAuthDetails, OpenApiManagedSecurityScheme
+from azure.identity import DefaultAzureCredential
 from utils import bind_parameters
 
-config = {}
+# Plugin endpoints use same CQA/CLU tools
+config = {
+    'language_resource_url': os.environ.get('LANGUAGE_ENDPOINT'),
+    'clu_project_name': os.environ.get('CLU_PROJECT_NAME'),
+    'clu_deployment_name': os.environ.get('CLU_DEPLOYMENT_NAME'),
+    'cqa_project_name': os.environ.get('CQA_PROJECT_NAME'),
+    'cqa_deployment_name': os.environ.get('CQA_DEPLOYMENT_NAME'),
+}
 
-DELETE_OLD_AGENTS = os.environ.get("DELETE_OLD_AGENTS", "false").lower() == "true"
-PROJECT_ENDPOINT = os.environ.get("AGENTS_PROJECT_ENDPOINT")
-MODEL_NAME = os.environ.get("AOAI_DEPLOYMENT")
-CONFIG_DIR = os.environ.get("CONFIG_DIR", ".")
-config_file = os.path.join(CONFIG_DIR, "config.json")
+DELETE_OLD_AGENTS = os.environ.get('DELETE_OLD_AGENTS', 'false').lower() == 'true'
+PROJECT_ENDPOINT = os.environ['AGENTS_PROJECT_ENDPOINT']
+MODEL_NAME = os.environ['AOAI_DEPLOYMENT']
+CONFIG_DIR = os.environ.get('CONFIG_DIR', '.')
+config_file = os.path.join(CONFIG_DIR, 'config.json')
 
-config['language_resource_url'] = os.environ.get("LANGUAGE_ENDPOINT")
-config['clu_project_name'] = os.environ.get("CLU_PROJECT_NAME")
-config['clu_deployment_name'] = os.environ.get("CLU_DEPLOYMENT_NAME")
-config['cqa_project_name'] = os.environ.get("CQA_PROJECT_NAME")
-config['cqa_deployment_name'] = os.environ.get("CQA_DEPLOYMENT_NAME")
-
-
-# Create agent client
 agents_client = AgentsClient(
     endpoint=PROJECT_ENDPOINT,
     credential=DefaultAzureCredential(),
-    api_version="2025-05-15-preview"
+    api_version='2025-05-15-preview'
 )
 
-def create_tools(config):
-    # Set up the auth details for the OpenAPI connection
-    auth = OpenApiManagedAuthDetails(security_scheme=OpenApiManagedSecurityScheme(audience="https://cognitiveservices.azure.com/"))
-
-    # Read in the OpenAPI spec from a file
-    with open("clu.json", "r") as f:
-        clu_openapi_spec = json.loads(bind_parameters(f.read(), config))
-
-    clu_api_tool = OpenApiTool(
-        name="clu_api",
-        spec=clu_openapi_spec,
-        description= "An API to extract intent from a given message - you MUST use version \"2023-04-01\" as this is extremely critical",
+def create_tools(cfg):
+    auth = OpenApiManagedAuthDetails(
+        security_scheme=OpenApiManagedSecurityScheme(audience='https://cognitiveservices.azure.com/')
+    )
+    with open('clu.json') as f:
+        clu_spec = json.loads(bind_parameters(f.read(), cfg))
+    with open('cqa.json') as f:
+        cqa_spec = json.loads(bind_parameters(f.read(), cfg))
+    clu_tool = OpenApiTool(
+        name='clu_api', spec=clu_spec,
+        description='Extract intent/entities via CLU v2023-04-01',
         auth=auth
     )
-
-    # Read in the OpenAPI spec from a file
-    with open("cqa.json", "r") as f:
-        cqa_openapi_spec = json.loads(bind_parameters(f.read(), config))
-
-    # Initialize an Agent OpenApi tool using the read in OpenAPI spec
-    cqa_api_tool = OpenApiTool(
-        name="cqa_api",
-        spec=cqa_openapi_spec,
-        description= "An API to get answer to questions related to business operation",
-        auth=auth
+    cqa_tool = OpenApiTool(
+        name='cqa_api', spec=cqa_spec,
+        description='Answer FAQs via CQA', auth=auth
     )
-
-    return clu_api_tool, cqa_api_tool
+    return clu_tool, cqa_tool
 
 with agents_client:
-    # If DELETE_OLD_AGENTS is set to true, delete all existing agents in the project
     if DELETE_OLD_AGENTS:
-        print("Deleting all existing agents in the project...")
-        agents = agents_client.list_agents()
-        for agent in agents:
-            print(f"Deleting agent: {agent.name} with ID: {agent.id}")
-            agents_client.delete_agent(agent.id)
+        for a in agents_client.list_agents():
+            agents_client.delete_agent(a.id)
 
-    # 1) Create the triage agent which can use CLU or CQA tools to answer questions or extract intent
-    clu_api_tool, cqa_api_tool = create_tools(config)
-    TRIAGE_AGENT_NAME = "TriageAgent"
-    TRIAGE_AGENT_INSTRUCTIONS = """
-    You are the Wildlife Tours Rwanda Concierge Bot—our digital expert guide. Your goal is to answer questions and redirect messages according to their intent. You have at your disposition 2 tools but can only use ONE:
-        1. cqa_api: to answer customer questions such as procedures, FAQs, policies, inclusions, timing, permits, and logistics.
-        2. clu_api: to extract the intent and entities from messages for: NewTripRequest, ModifyTripDetails, BookingStatus, CancelTrip, TourActivitiesInquiry, AccommodationInquiry, TravelAdvice, and ContactHumanAgent intents.
-        You must use ONE of the tools to perform your task. You should only use one tool at a time, and do NOT chain the tools together. Only if the tools are not able to provide the information, you can answer according to your general knowledge. You must return the full API response for either tool and ensure it's a valid JSON.
-        - When you return answers from the clu_api, format the response as JSON: {"type": "clu_result", "response": {clu_response}, "terminated": "False"}, where clu_response is the full JSON API response from the clu_api without rewriting or removing any info. Return immediately. Do not call the cqa_api afterwards.
-            - An example of a valid clu_response is {"kind": "ConversationResult", "result": {"query": "I want a romantic holiday in Akagera, August 10 to 13, budget $1200", "prediction": {"topIntent": "NewTripRequest", "projectKind": "Conversation", "intents": [{"category": "NewTripRequest", "confidenceScore": 0.8545539}, {"category": "ModifyTripDetails", "confidenceScore": 0.59596604}, {"category": "BookingStatus", "confidenceScore": 0.5501976}, {"category": "None", "confidenceScore": 0.33382362}], "entities": [{"category": "Destination", "text": "Akagera", "offset": 29, "length": 7, "confidenceScore": 1}, {"category": "TravelDate", "text": "August 10 to 13", "offset": 38, "length": 15, "confidenceScore": 0.9}, {"category": "Budget", "text": "$1200", "offset": 62, "length": 5, "confidenceScore": 0.95}, {"category": "TravelPurpose", "text": "romantic holiday", "offset": 9, "length": 16, "confidenceScore": 0.88}]}}}
-            - To call the clu_api, the following parameter values **must** be used in the payload as a valid JSON object: {"api-version":"2023-04-01", "analysisInput":{"conversationItem":{"id":<id>,"participantId":<id>,"text":<user input>}},"parameters":{"projectName":"wildlife-tours-clu","deploymentName":"clu-m1-d1"},"kind":"Conversation"}
-            - You must validate the input to ensure it is a valid JSON object before calling the clu_api.
-        - When you return answers from the cqa_api, format the response as JSON: {"type": "cqa_result", "response": {cqa_response}, "terminated": "True"} where cqa_response is the full JSON API response from the cqa_api without rewriting or removing any info. Return immediately
-    """
+    clu_tool, cqa_tool = create_tools(config)
 
-    triage_agent_definition = agents_client.create_agent(
+    # 1) Triage Agent
+    triage_instructions = '''
+You are the Wildlife Tours Rwanda Concierge Bot. Use exactly ONE tool:
+1. cqa_api for FAQs, policies, inclusions, logistics.
+2. clu_api for intent extraction (NewTripRequest, ModifyTripDetails, BookingStatus, CancelTrip, TourActivitiesInquiry, AccommodationInquiry, TravelAdvice, ContactHumanAgent).
+Return JSON: for CLU: {"type":"clu_result","response":<fullResponse>,"terminated":"False"}; for CQA: {"type":"cqa_result","response":<fullResponse>,"terminated":"True"}.
+If CLU confidence < threshold, call fallback_agent.
+''' 
+    triage = agents_client.create_agent(
         model=MODEL_NAME,
-        name=TRIAGE_AGENT_NAME,
-        instructions= TRIAGE_AGENT_INSTRUCTIONS,
-        tools=clu_api_tool.definitions + cqa_api_tool.definitions,
-        temperature=0.2,
-        )
-    
-    # 2) Create the head support agent which takes in CLU intents and entities and routes the request to the appropriate support agent
-    HEAD_SUPPORT_AGENT_NAME = "HeadSupportAgent"
-    HEAD_SUPPORT_AGENT_INSTRUCTIONS = """
-     You are a head support agent that routes inquiries to the proper custom agent based on the provided intent and entities from the triage agent.
-        You must choose between the following agents:
-        - OrderStatusAgent: for order status inquiries
-        - OrderCancelAgent: for order cancellation inquiries
-        - OrderRefundAgent: for order refund inquiries
-
-        You must return the response in the following valid JSON format: {"target_agent": "<AgentName>","intent": "<IntentName>","entities": [<List of extracted entities>],"terminated": "False"}
-
-        Where:
-        - "target_agent" is the name of the agent you are routing to (must match one of the agent names above).
-        - "intent" is the top-level intent extracted from the CLU result.
-        - "entities" is a list of all entities extracted from the CLU result, including their category and value.
-    """
-
-    head_support_agent_definition = agents_client.create_agent(
-        model=MODEL_NAME,
-        name=HEAD_SUPPORT_AGENT_NAME,
-        instructions=HEAD_SUPPORT_AGENT_INSTRUCTIONS,
+        name='TriageAgent',
+        instructions=triage_instructions,
+        tools=clu_tool.definitions + cqa_tool.definitions,
+        temperature=0.2
     )
 
-    # 3) Create the custom agents for handling specific intents (our examples are OrderStatus, OrderCancel, and OrderRefund). Plugin tools will be added to these agents when we turn them into Semantic Kernel agents.
-    ORDER_STATUS_AGENT_NAME = "OrderStatusAgent"
-    ORDER_STATUS_AGENT_INSTRUCTIONS = """
-    You are a customer support agent that checks order status. You must use the OrderStatusPlugin to check the status of an order. The plugin will return a string, which you must use as the <OrderStatusPlugin Response>.
-    If you need more information from the user, you must return a response with "need_more_info": "True", otherwise you must return "need_more_info": "False".
-    You must return the response in the following valid JSON format: {"response": <OrderStatusPlugin Response>, "terminated": "True", "need_more_info": <"True" or "False">}
-    """
-
-    order_status_agent_definition = agents_client.create_agent(
+    # 2) Head Support Agent
+    head_instructions = '''
+Route based on triage CLU result field "topIntent".
+Return JSON: {"target_agent":"<AgentName>","intent":"<Intent>","entities":<entities>,"terminated":"False"}.
+''' 
+    head = agents_client.create_agent(
         model=MODEL_NAME,
-        name=ORDER_STATUS_AGENT_NAME,
-        instructions=ORDER_STATUS_AGENT_INSTRUCTIONS,
+        name='HeadSupportAgent',
+        instructions=head_instructions
     )
 
-    ORDER_CANCEL_AGENT_NAME = "OrderCancelAgent"
-    ORDER_CANCEL_AGENT_INSTRUCTIONS = """
-    You are a customer support agent that handles order cancellations. You must use the OrderCancellationPlugin to handle order cancellation requests. The plugin will return a string, which you must use as the <OrderCancellationPlugin Response>.
-    If you need more information from the user, you must return a response with "need_more_info": "True", otherwise you must return "need_more_info": "False".
-    You must return the response in the following valid JSON format: {"response": <OrderCancellationPlugin Response>, "terminated": "True", "need_more_info": <"True" or "False">}
-    """
+    # 3) Custom Action Agents
+    def make_agent(name, instruct):
+        return agents_client.create_agent(model=MODEL_NAME, name=name, instructions=instruct)
 
-    order_cancel_agent_definition = agents_client.create_agent(
-        model=MODEL_NAME,
-        name=ORDER_CANCEL_AGENT_NAME,
-        instructions=ORDER_CANCEL_AGENT_INSTRUCTIONS,
-    )
+    safari_instruct = '''
+You are SafariPlanningAgent. Use SafariPlanningPlugin to plan an adventurous, community-driven safari.
+Return JSON: {"response":<itinerary>,"terminated":"True"}.
+'''
+    safari = make_agent('SafariPlanningAgent', safari_instruct)
 
-    ORDER_REFUND_AGENT_NAME = "OrderRefundAgent"
-    ORDER_REFUND_AGENT_INSTRUCTIONS = """
-    You are a customer support agent that handles order refunds. You must use the OrderRefundPlugin to handle order refund requests. The plugin will return a string, which you must use as the <OrderRefundPlugin Response>.
-    If you need more information from the user, you must return a response with "need_more_info": "True", otherwise you must return "need_more_info": "False".
-    You must return the response in the following valid JSON format: {"response": <OrderRefundPlugin Response>, "terminated": "True", "need_more_info": <"True" or "False">}
-    """
+    hotel_instruct = '''
+You are HotelBookingAgent. Use HotelBookingPlugin to book lodgings.
+Return JSON: {"response":<confirmation>,"terminated":"True"}.
+'''
+    hotel = make_agent('HotelBookingAgent', hotel_instruct)
 
-    order_refund_agent_definition = agents_client.create_agent(
-        model=MODEL_NAME,
-        name=ORDER_REFUND_AGENT_NAME,
-        instructions=ORDER_REFUND_AGENT_INSTRUCTIONS,
-    )
+    transport_instruct = '''
+You are TransportCoordinationAgent. Use TransportCoordinationPlugin to schedule transport.
+Return JSON: {"response":<confirmation>,"terminated":"True"}.
+'''
+    transport = make_agent('TransportCoordinationAgent', transport_instruct)
 
-    # Output the agent IDs in a JSON format to be captured as env variables
-    agent_ids = {
-        "TRIAGE_AGENT_ID": triage_agent_definition.id,
-        "HEAD_SUPPORT_AGENT_ID": head_support_agent_definition.id,
-        "ORDER_STATUS_AGENT_ID": order_status_agent_definition.id,
-        "ORDER_CANCEL_AGENT_ID": order_cancel_agent_definition.id,
-        "ORDER_REFUND_AGENT_ID": order_refund_agent_definition.id,
+    experience_instruct = '''
+You are ExperienceCurationAgent. Use ExperienceCurationPlugin to curate park activities.
+Return JSON: {"response":<details>,"terminated":"True"}.
+'''
+    experience = make_agent('ExperienceCurationAgent', experience_instruct)
+
+    feedback_instruct = '''
+You are FeedbackSurveyAgent. Use FeedbackSurveyPlugin to collect user feedback.
+Return JSON: {"response":<ack>,"terminated":"True"}.
+'''
+    feedback = make_agent('FeedbackSurveyAgent', feedback_instruct)
+
+    fallback_instruct = '''
+You are FallbackHandlerAgent. Use FallbackHandlerPlugin to handle unclear requests.
+Return JSON: {"response":<prompt>,"terminated":"True"}.
+'''
+    fallback = make_agent('FallbackHandlerAgent', fallback_instruct)
+
+    # Save agent IDs
+    ids = {
+        'TRIAGE_AGENT_ID': triage.id,
+        'HEAD_SUPPORT_AGENT_ID': head.id,
+        'SAFARI_PLANNING_AGENT_ID': safari.id,
+        'HOTEL_BOOKING_AGENT_ID': hotel.id,
+        'TRANSPORT_COORDINATION_AGENT_ID': transport.id,
+        'EXPERIENCE_CURATION_AGENT_ID': experience.id,
+        'FEEDBACK_SURVEY_AGENT_ID': feedback.id,
+        'FALLBACK_HANDLER_AGENT_ID': fallback.id
     }
-
-    # Write to config.json file
-    try:
-        # Ensure the config directory exists
-        os.makedirs(CONFIG_DIR, exist_ok=True)
-        
-        with open(config_file, 'w') as f:
-            json.dump(agent_ids, f, indent=2)
-        print(f"Agent IDs written to {config_file}")
-        print(json.dumps(agent_ids, indent=2))  
-    except Exception as e:
-        print(f"Error writing to {config_file}: {e}")
-        print(json.dumps(agent_ids, indent=2)) 
-        
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    with open(config_file, 'w') as f:
+        json.dump(ids, f, indent=2)
+    print('Agent IDs written to', config_file)
+    print(json.dumps(ids, indent=2))
+    print('Agents setup complete.')
+    print('Running the agent orchestrator with: python infra/scripts/language/agent_orchestrator.py')

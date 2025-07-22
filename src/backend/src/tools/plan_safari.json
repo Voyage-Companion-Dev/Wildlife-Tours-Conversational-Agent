@@ -1,0 +1,34 @@
+{
+  "type": "function",
+  "function": {
+    "name": "plan_safari",
+    "description": "Plans an adventurous, community‑driven wildlife safari itinerary.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "description": "Name of the park or region (e.g. Volcanoes, Akagera, Nyungwe)."
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Trip start date in YYYY‑MM‑DD format."
+        },
+        "end_date": {
+          "type": "string",
+          "description": "Trip end date in YYYY‑MM‑DD format."
+        },
+        "num_people": {
+          "type": "integer",
+          "description": "Number of travelers."
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "fr"],
+          "description": "Response language code."
+        }
+      },
+      "required": ["destination", "start_date", "end_date", "num_people"]
+    }
+  }
+}

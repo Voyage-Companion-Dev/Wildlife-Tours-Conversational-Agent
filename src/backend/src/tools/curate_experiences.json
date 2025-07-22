@@ -1,0 +1,30 @@
+{
+  "type": "function",
+  "function": {
+    "name": "curate_experience",
+    "description": "Curates park experiences, cultural add‑ons, and guided activities.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "park_name": {
+          "type": "string",
+          "description": "Name of the park (e.g. Akagera, Nyungwe)."
+        },
+        "experience_type": {
+          "type": "string",
+          "description": "Type of experience (e.g. night game drive, community village visit)."
+        },
+        "preferences": {
+          "type": "string",
+          "description": "User’s special interests or requirements."
+        },
+        "language": {
+          "type": "string",
+          "enum": ["en", "fr"],
+          "description": "Response language code."
+        }
+      },
+      "required": ["park_name", "experience_type", "preferences"]
+    }
+  }
+}
